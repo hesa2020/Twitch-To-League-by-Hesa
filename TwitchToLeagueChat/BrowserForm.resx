@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="webBrowser1.Url" xml:space="preserve">
-    <value>https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&amp;client_id=7ij5crf8xor3hxnkes3atm93vj96bzi&amp;redirect_uri=http://localhost:4515/signin-Twitch&amp;scope=user_read+user_follows_edit+channel_subscriptions+user_subscriptions+channel_check_subscription+chat_login&amp;state=1</value>
+    <value>https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&amp;client_id=7ij5crf8xor3hxnkes3atm93vj96bzi&amp;redirect_uri=http://twitchtoleague.pcriot.com/signin-Twitch&amp;scope=user_read+user_follows_edit+channel_subscriptions+user_subscriptions+channel_check_subscription+chat_login&amp;state=1</value>
   </data>
 </root>
