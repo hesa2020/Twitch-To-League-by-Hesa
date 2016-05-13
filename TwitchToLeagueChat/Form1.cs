@@ -38,7 +38,7 @@ namespace TwitchToLeagueChat
             Properties.Settings.Default["TwitchMinimumLevel"] = TwitchMinimumLevel.Text;
             Properties.Settings.Default["SummonerName"] = SummonerName.Text;
             Properties.Settings.Default.Save(); // Saves settings in application configuration file
-            MessageBox.Show(@"Settings have been saved successfully.");
+            if(sender != null) MessageBox.Show(@"Settings have been saved successfully.");
         }
 
         private void buttonRun_Click(object sender, System.EventArgs e)
@@ -55,6 +55,7 @@ namespace TwitchToLeagueChat
                 MessageBox.Show(@"Please fill all settings correctly.");
                 return;
             }
+            button1_Click(null, e);
             _isRunning = !_isRunning;
             buttonRun.Text = _isRunning ? "Stop" : "Run";
             if (_isRunning)
@@ -75,6 +76,7 @@ namespace TwitchToLeagueChat
                 LoLChat = null;
                 ChatEngine.Stop();
                 ChatEngine = null;
+                TwitchChatManager.Stop();
                 //GC.Collect();
             }
         }

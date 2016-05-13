@@ -24,12 +24,7 @@ namespace TwitchToLeagueChat.Objects
         NetworkStream _nwStream;
         StreamReader _reader;
         StreamWriter _writer;
-        private int _tickCount;
-
-        //Handling Threads
-        //private Thread _handleMessages;
-        //public List<string> Responses = new List<string>();
-
+        
         //Special vars
         Dictionary<string, bool> _pollOpen;
         Dictionary<string, Dictionary<string, Dictionary<string, int>>> _pollVotes;
@@ -38,20 +33,8 @@ namespace TwitchToLeagueChat.Objects
 
         //Listen thread
         Thread _listen;
-
-        /*public void HandleResponses()
-        {
-            while (true)
-            {
-                if (Responses.Count > 0)
-                {
-                    SendMessage(Responses[0]);
-                    Responses.RemoveAt(0);
-                }
-                Thread.Sleep(1500);
-            }
-        }*/
-
+        bool _runThread;
+        
         //Initialize
         public void Initialize()
         {
@@ -71,10 +54,6 @@ namespace TwitchToLeagueChat.Objects
             _pollVotes = new Dictionary<string, Dictionary<string, Dictionary<string, int>>>();
             _antiSpoil = new Dictionary<string, bool>();
             _blackList = new Dictionary<string, Dictionary<string, int>>();
-            //_handleResponses = new Thread(HandleMessages);
-            //_handleMessages = new Thread(HandleResponses);
-            //_handleResponses.Start();
-            _handleMessages.Start();
             //Writes userdata to twitch - remember your username and password!
             _writer.WriteLine("USER " + botusername + "tmi twitch :" + botusername);
             _writer.Flush();
@@ -92,14 +71,15 @@ namespace TwitchToLeagueChat.Objects
 
             //Starts a thread that reads all data from IRC
             _listen = new Thread(Listen);
+            _runThread = true;
             _listen.Start();
             Initialized = true;
         }
         [SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
         public void Stop()
         {
-            _listen.Abort();
-
+            _runThread = false;
+            if(_listen != null) _listen.Abort();
         }
         //Reads all the data from the IRC server
         public void Listen()
@@ -107,7 +87,7 @@ namespace TwitchToLeagueChat.Objects
             string Data = "";
             try
             {
-                while ((Data = _reader.ReadLine()) != null)
+                while (_runThread && (Data = _reader.ReadLine()) != null)
                 {
                     //Initializing vars
                     string _nick = "";
@@ -160,7 +140,7 @@ namespace TwitchToLeagueChat.Objects
                                     _message += ":" + split1[i] + " ";
                             }
                         }
-                        if (_nick != "tmi.twitch.tv" && _nick != Properties.Settings.Default["TwitchBotUsername"].ToString().ToLower()+".tmi.twitch.tv")
+                        if (_nick != "tmi.twitch.tv" && _nick != Properties.Settings.Default["TwitchBotUsername"].ToString().ToLower() + ".tmi.twitch.tv")
                             TwitchChatManager.HandleChatMessage(_nick, _message);
                     }
                 }
