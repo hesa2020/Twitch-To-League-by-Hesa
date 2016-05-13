@@ -89,16 +89,25 @@ namespace TwitchToLeagueChat.Managers
             }
             else
             {
-
-                var userType = GetUserType(fromUser);
-                bool canPost = userType == UserType.Host || (RequiredLevel == "Viewers") ||
-                               (RequiredLevel == "Subscribers" && userType != UserType.Viewer) ||
-                               (RequiredLevel == "Moderators" &&
-                                (userType == UserType.Moderator || userType == UserType.Host));
-                if (canPost && LolChat != null)
+                if(RequiredLevel == "Viewers")
                 {
-                    LolChat.SendMessage(fromUser + ": " + message, LolChat.GetLolChatUser);//Send message to LoL chat
+                    if (LolChat != null)
+                    {
+                        LolChat.SendMessage(fromUser + ": " + message, LolChat.GetLolChatUser);//Send message to LoL chat
+                    }
                 }
+                else
+                {
+                    var userType = GetUserType(fromUser);
+                    bool canPost = userType == UserType.Host || (RequiredLevel == "Viewers") ||
+                                   (RequiredLevel == "Subscribers" && userType != UserType.Viewer) ||
+                                   (RequiredLevel == "Moderators" &&
+                                    (userType == UserType.Moderator || userType == UserType.Host));
+                    if (canPost && LolChat != null)
+                    {
+                        LolChat.SendMessage(fromUser + ": " + message, LolChat.GetLolChatUser);//Send message to LoL chat
+                    }
+                }                
             }
         }
     }
