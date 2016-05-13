@@ -52,7 +52,7 @@ namespace TwitchToLeagueChat.Managers
             Moderators.Clear();
             foreach (var moderator in moderators)
             {
-                Moderators.Add(moderator.ToString());
+                Moderators.Add(moderator.ToString().ToLower());
             }
         }
 
@@ -85,7 +85,8 @@ namespace TwitchToLeagueChat.Managers
                 //if (fromUser != "")
                 //ChatManager.Responses.Add(fromUser + ": " + message);
                 //else
-                ChatManager.Responses.Add(message);//Send message to twitch chat
+                //ChatManager.Responses.Add(message);//Send message to twitch chat
+                ChatManager.SendMessage(message);//Send message to twitch chat
             }
             else
             {

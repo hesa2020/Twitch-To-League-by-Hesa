@@ -71,8 +71,11 @@ namespace TwitchToLeagueChat
             }
             else
             {
+                LoLChat.Disconnect();
                 LoLChat = null;
+                ChatEngine.Stop();
                 ChatEngine = null;
+                //GC.Collect();
             }
         }
         private void buttonGrabKey_Click(object sender, System.EventArgs e)

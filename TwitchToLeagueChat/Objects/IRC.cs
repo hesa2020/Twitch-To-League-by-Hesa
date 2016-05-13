@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading;
 using TwitchToLeagueChat.Managers;
@@ -26,9 +27,8 @@ namespace TwitchToLeagueChat.Objects
         private int _tickCount;
 
         //Handling Threads
-        private Thread _handleMessages;
-        public List<string> Messages = new List<string>();
-        public List<string> Responses = new List<string>();
+        //private Thread _handleMessages;
+        //public List<string> Responses = new List<string>();
 
         //Special vars
         Dictionary<string, bool> _pollOpen;
@@ -39,7 +39,7 @@ namespace TwitchToLeagueChat.Objects
         //Listen thread
         Thread _listen;
 
-        public void HandleResponses()
+        /*public void HandleResponses()
         {
             while (true)
             {
@@ -50,7 +50,7 @@ namespace TwitchToLeagueChat.Objects
                 }
                 Thread.Sleep(1500);
             }
-        }
+        }*/
 
         //Initialize
         public void Initialize()
@@ -72,7 +72,7 @@ namespace TwitchToLeagueChat.Objects
             _antiSpoil = new Dictionary<string, bool>();
             _blackList = new Dictionary<string, Dictionary<string, int>>();
             //_handleResponses = new Thread(HandleMessages);
-            _handleMessages = new Thread(HandleResponses);
+            //_handleMessages = new Thread(HandleResponses);
             //_handleResponses.Start();
             _handleMessages.Start();
             //Writes userdata to twitch - remember your username and password!
@@ -95,7 +95,12 @@ namespace TwitchToLeagueChat.Objects
             _listen.Start();
             Initialized = true;
         }
+        [SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
+        public void Stop()
+        {
+            _listen.Abort();
 
+        }
         //Reads all the data from the IRC server
         public void Listen()
         {
