@@ -7,6 +7,7 @@ using TwitchCSharp.Helpers;
 using TwitchToLeagueChat.Objects;
 using System.Threading;
 using System.Security.Permissions;
+using System.Windows.Forms;
 
 namespace TwitchToLeagueChat.Managers
 {
@@ -21,6 +22,10 @@ namespace TwitchToLeagueChat.Managers
     {
         public static IRC ChatManager;
         public static LolChatManager LolChat;
+        public static DataGridView Bannedwords;
+        public static DataGridView Whitelist;
+        public static DataGridView Blacklist;
+        public static string FilterMode;
         private static TwitchAuthenticatedClient _client;
 
         public static List<string> Moderators = new List<string>();
@@ -115,6 +120,9 @@ namespace TwitchToLeagueChat.Managers
             }
             else
             {
+                if (!AllowFromWhitelistBlacklist(fromUser)) return;
+                if (IsMessageBlacklisted(message.ToLower())) return;
+
                 if(RequiredLevel == "Viewers")
                 {
                     if (LolChat != null)
@@ -126,10 +134,59 @@ namespace TwitchToLeagueChat.Managers
                     bool canPost = userType == UserType.Host ||
                                    (RequiredLevel == "Subscribers" && userType != UserType.Viewer) ||
                                    (RequiredLevel == "Moderators" && userType == UserType.Moderator);
+                    
                     if (canPost && LolChat != null)
                         LolChat.SendMessage(fromUser + ": " + message, LolChat.GetLolChatUser);//Send message to LoL chat
-                }                
+                }
             }
+        }
+        public static bool AllowFromWhitelistBlacklist(string fromUser)
+        {
+            switch (FilterMode)
+            {
+                case "Blacklist Only":
+                    if (fromUser.ToLower().Equals(HostName.ToLower())) return true;
+                    foreach (DataGridViewRow row in Blacklist.Rows)
+                    {
+                        if (row.Cells[0].Value.ToString().ToLower().Equals(fromUser.ToLower())) return false;
+                    }
+                break;
+                case "Whitelist Only":
+                    if (fromUser.ToLower().Equals(HostName.ToLower())) return true;
+                    foreach (DataGridViewRow row in Whitelist.Rows)
+                    {
+                        if (row.Cells[0].Value.ToString().ToLower().Equals(fromUser.ToLower())) return true;
+                    }
+                    return false;
+                break;
+            }
+            return true;
+        }
+        public static bool IsMessageBlacklisted(string message)
+        {
+            message = message.Trim();
+            foreach (DataGridViewRow row in Bannedwords.Rows)
+            {
+                if (row.Cells.Count != 2) continue;
+                var words = row.Cells[0].Value.ToString().ToLower();
+                var pattern = row.Cells[1].Value.ToString();
+                switch (pattern)
+                {
+                    case "Contains":
+                        if (message.Contains(words)) return true;
+                    break;
+                    case "End With":
+                        if (message.EndsWith(words)) return true;
+                    break;
+                    case "Equals":
+                        if (message.Equals(words)) return true;
+                    break;
+                    case "Start With":
+                        if (message.StartsWith(words)) return true;
+                    break;
+                }
+            }
+            return false;
         }
     }
 }
