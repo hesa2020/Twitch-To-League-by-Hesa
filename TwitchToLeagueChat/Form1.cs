@@ -55,7 +55,7 @@ namespace TwitchToLeagueChat
         }
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://twitch.tv/HesaHD");
+            Process.Start("https://twitch.tv/TheHesa");
         }
         private void button1_Click(object sender, System.EventArgs e)
         {
