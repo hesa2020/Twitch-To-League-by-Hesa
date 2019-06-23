@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TwitchToLeagueChat
@@ -18,5 +15,11 @@ namespace TwitchToLeagueChat
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
         }
+
+        /*public static string BerearCode()
+        {
+            string lastLine = System.IO.File.ReadLines(System.IO.Path.Combine(Settings.Default.LeaguePath, "System.yaml")).Last();
+            return lastLine.Replace("token:", "").Trim();
+        }*/
     }
 }

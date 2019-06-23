@@ -25,12 +25,12 @@ namespace TwitchToLeagueChat.Objects
         private string _group;
 
         public bool IsOnline;
-        public jabber.protocol.iq.Item Item;
+        public JabberNet.jabber.protocol.iq.Item Item;
         private string _status;
         public WebClient C = new WebClient();
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public LolChatUser(string jid, string nickname, string @group, string status, jabber.protocol.iq.Item item)
+        public LolChatUser(string jid, string nickname, string @group, string status, JabberNet.jabber.protocol.iq.Item item)
         {
             Item = item;
             Jid = jid;
@@ -76,6 +76,7 @@ namespace TwitchToLeagueChat.Objects
         public string GameStatus { get { return _gameStatus; } set { _gameStatus = value; NotifyPropertyChanged("gameStatus"); } }
         public string TimeStamp { get { return _timeStamp; } set { _timeStamp = value; NotifyPropertyChanged("timeStamp"); } }
         public string Jid { get; set; }
+        public bool Mobile { get; set; }
 
         public void CalcDuration()
         {

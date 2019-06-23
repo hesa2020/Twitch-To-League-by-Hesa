@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using jabber.client;
+using JabberNet.jabber.client;
 using System.ComponentModel;
 using System.Security;
 using System.Timers;
 using TwitchToLeagueChat.Objects;
+using System.IO;
+using TwitchToLeagueChat.Properties;
+
 namespace TwitchToLeagueChat.Managers
 {
     public class LolChatManager
@@ -28,40 +31,61 @@ namespace TwitchToLeagueChat.Managers
 
         readonly Timer _durationTimer = new Timer(30000);
 
+        public RiotAuthToken AuthCred;
+
         public LolChatManager()
         {
-            _c.OnPresence += c_OnPresence;
-            _c.OnInvalidCertificate += c_OnInvalidCertificate;
-            _k.OnRosterItem += k_OnRosterItem;
-            _k.OnRosterEnd += k_OnRosterEnd;
-            _c.OnMessage += c_OnMessage;
-            _c.OnDisconnect += c_OnDisconnect;
-            _c.OnAuthError += c_OnAuthError;
-            _c.OnError += c_OnError;
-            _durationTimer.Elapsed += durationTimer_Elapsed;
+            _c.OnConnect += C_OnConnect;
+            _c.OnPresence += C_OnPresence;
+            _c.OnInvalidCertificate += C_OnInvalidCertificate;
+            _c.OnLoginRequired += C_OnLoginRequired;
+            _k.OnRosterItem += K_OnRosterItem;
+            _k.OnRosterEnd += K_OnRosterEnd;
+            _c.OnMessage += C_OnMessage;
+            _c.OnDisconnect += C_OnDisconnect;
+            _c.OnAuthenticate += C_OnAuthenticate;
+            _c.OnAuthError += C_OnAuthError;
+            _c.OnError += C_OnError;
+            
+            _durationTimer.Elapsed += DurationTimer_Elapsed;
             _durationTimer.Start();
         }
-        void c_OnError(object sender, Exception ex)
-        {
-            if (OnError != null)
-                OnError(ex.Message);
 
+        private void C_OnAuthenticate(object sender)
+        {
+            
         }
 
-        void durationTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void C_OnLoginRequired(object sender)
+        {
+            //((JabberClient)sender).Write($"<auth xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\" mechanism=\"X-Riot-RSO\">{_c.Password}</auth>");
+        }
+
+        private void C_OnConnect(object sender, JabberNet.jabber.connection.StanzaStream stream)
+        {
+            //var host = "chat.na2.lol.riotgames.com";
+            //stream.Write($"<stream:stream to=\"{host}\" xml:lang=\"*\" version=\"1.0\" xmlns:stream=\"http://etherx.jabber.org/streams\" xmlns=\"jabber:client\">");
+        }
+
+        void C_OnError(object sender, Exception ex)
+        {
+            OnError?.Invoke(ex.Message);
+        }
+
+        void DurationTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             foreach (var user in TheUsers)
             {
                 if (UserChanged != null)
                 {
-                    if (_c.InvokeControl != null)
+                    /*if (_c.InvokeControl != null)
                     {
                         _c.InvokeControl.Invoke(UserChanged, new object[] { user });
-                    }
-
+                    }*/
                 }
             }
         }
+
         public void Disconnect()
         {
             _c.Close(true);
@@ -122,60 +146,26 @@ namespace TwitchToLeagueChat.Managers
 
         public void Initialize(string username, string password, string server, ISynchronizeInvoke si)
         {
-            _c.InvokeControl = si;
+            var Rso = AuthClass.GetOpenIdConfig();
+            var regionData = AuthClass.ReadSystemRegionData(Path.Combine(Settings.Default.LeaguePath, "system.yaml"), server.ToUpper());
+            AuthCred = AuthClass.GetLoginToken(username, password, regionData, Rso);
+            var userData = AuthClass.GetUserData(AuthCred);
+
+            //_c.InvokeControl = si;
+            _c.Resource = "";
             _c.User = username;
-            _c.Password = "AIR_" + password;
-            _c.Port = 5223;
+            _c.Password = AuthCred.AccessTokenJson.AccessToken;
+
+            _c.Server = "pvp.net";
+            _c.NetworkHost = AuthCred.RegionData.Servers.Chat.ChatHost;
+            _c.Port = AuthCred.RegionData.Servers.Chat.ChatPort;
             _c.SSL = true;
             _c.AutoRoster = true;
             _c.AutoLogin = true;
             _c.AutoPresence = true;
-            switch (server)
-            {
-                case "NA":
-                    _c.NetworkHost = "chat.na2.lol.riotgames.com";
-                    break;
-                case "EU West":
-                    _c.NetworkHost = "chat.euw1.lol.riotgames.com";
-                    break;
-                case "EU Nordic":
-                    _c.NetworkHost = "chat.eun1.lol.riotgames.com";
-                    break;
-                case "Public Beta Environment":
-                    _c.NetworkHost = "chat.pbe1.lol.riotgames.com";
-                    break;
-                case "Oceania":
-                    _c.NetworkHost = "chat.oc1.lol.riotgames.com";
-                    break;
-                case "Brazil":
-                    _c.NetworkHost = "chat.br.lol.riotgames.com";
-                    break;
-                case "Turkey":
-                    _c.NetworkHost = "chat.tr.lol.riotgames.com";
-                    break;
-                case "Russia":
-                    _c.NetworkHost = "chat.ru.lol.riotgames.com";
-                    break;
-                case "Latin America North":
-                    _c.NetworkHost = "chat.la1.lol.riotgames.com";
-                    break;
-                case "Latin America South":
-                    _c.NetworkHost = "chat.la2.lol.riotgames.com";
-                    break;
-                case "Taiwan":
-                    _c.NetworkHost = "chat.na2.lol.riotgames.com";
-                    break;
-                case "Thailand":
-                    _c.NetworkHost = "chattw.lol.garenanow.com";
-                    break;
-                case "Vietnamn":
-                    _c.NetworkHost = "chatvn.lol.garenanow.com";
-                    break;
-                case "Phillipines":
-                    _c.NetworkHost = "chatph.lol.garenanow.com";
-                    break;
-            }
-            _c.Server = "pvp.net";
+            _c["sasl.mechanisms"] = "X-Riot-RSO";
+            _c.RequiresSASL = false;
+
             _k.Stream = _c;
 
             Users.Clear();
@@ -184,38 +174,29 @@ namespace TwitchToLeagueChat.Managers
             _c.Connect();
         }
 
-        bool c_OnInvalidCertificate(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certificate, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
+        bool C_OnInvalidCertificate(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certificate, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
         {
             return true;
         }
 
-        void c_OnAuthError(object sender, System.Xml.XmlElement rp)
+        void C_OnAuthError(object sender, System.Xml.XmlElement rp)
         {
-            if (OnError != null) OnError("Wrong username or password");
-            if (OnDisconnect != null)
-            {
-                OnDisconnect();
-            }
+            Console.WriteLine(rp.ToString());
+            OnError?.Invoke("Wrong username or password");
+            OnDisconnect?.Invoke();
         }
 
-        void c_OnDisconnect(object sender)
+        void C_OnDisconnect(object sender)
         {
-            if (OnDisconnect != null)
-            {
-                OnDisconnect();
-            }
+            OnDisconnect?.Invoke();
         }
 
-        void k_OnRosterEnd(object sender)
+        void K_OnRosterEnd(object sender)
         {
-
-            if (OnConnect != null)
-            {
-                OnConnect();
-            }
+            OnConnect?.Invoke();
         }
 
-        void c_OnMessage(object sender, jabber.protocol.client.Message msg)
+        void C_OnMessage(object sender, JabberNet.jabber.protocol.client.Message msg)
         {
             if ((OnMessage != null) && (!msg.Body.StartsWith("<body>")))
             {
@@ -237,17 +218,16 @@ namespace TwitchToLeagueChat.Managers
                 }
             }
         }
-        void k_OnRosterItem(object sender, jabber.protocol.iq.Item ri)
+
+        void K_OnRosterItem(object sender, JabberNet.jabber.protocol.iq.Item ri)
         {
 
             if (Users.ContainsKey(ri.JID.User))
             {
-                if (ri.Subscription == jabber.protocol.iq.Subscription.remove)
+                if (ri.Subscription == JabberNet.jabber.protocol.iq.Subscription.remove)
                 {
                     Users[ri.JID.User].Status = null;
-
-                    if (UserChanged != null)
-                        UserChanged(Users[ri.JID.User]);
+                    UserChanged?.Invoke(Users[ri.JID.User]);
                     Users.Remove(ri.JID.User);
 
                 }
@@ -282,7 +262,7 @@ namespace TwitchToLeagueChat.Managers
             }
         }
 
-        void c_OnPresence(object sender, jabber.protocol.client.Presence pres)
+        void C_OnPresence(object sender, JabberNet.jabber.protocol.client.Presence pres)
         {
             if (Users.ContainsKey(pres.From.User))
             {
@@ -299,7 +279,6 @@ namespace TwitchToLeagueChat.Managers
                 Users[pres.From.User].IsOnline = false;
                 if (TheUsers.Contains(Users[pres.From.User]))
                     TheUsers.Remove(Users[pres.From.User]);
-
             }
             else
             {
@@ -309,8 +288,7 @@ namespace TwitchToLeagueChat.Managers
             }
             if (TheUsers.Contains(Users[pres.From.User]))
             {
-                if (UserChanged != null)
-                    UserChanged(Users[pres.From.User]);
+                UserChanged?.Invoke(Users[pres.From.User]);
             }
         }
     }

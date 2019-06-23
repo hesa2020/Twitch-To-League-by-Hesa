@@ -18,6 +18,7 @@ namespace TwitchToLeagueChat.Managers
         Moderator = 2,
         Host = 3
     }
+
     public static class TwitchChatManager
     {
         public static IRC ChatManager;
@@ -39,6 +40,7 @@ namespace TwitchToLeagueChat.Managers
         
         public static void Initialize()
         {
+            return;
             RequiredLevel = Properties.Settings.Default["TwitchMinimumLevel"].ToString();
             HostName = Properties.Settings.Default["TwitchBotUsername"].ToString().ToLower();
             _client = new TwitchAuthenticatedClient(Properties.Settings.Default["TwitchBotKey"].ToString(), "7ij5crf8xor3hxnkes3atm93vj96bzi");
@@ -50,12 +52,13 @@ namespace TwitchToLeagueChat.Managers
                 _rolesRefresherThread.Start();
             }
         }
-        [SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
+        [SecurityPermission(SecurityAction.Demand, ControlThread = true)]
         public static void Stop()
         {
             _runThread = false;
             if(_rolesRefresherThread != null) _rolesRefresherThread.Abort();
         }
+
         private static void RefreshRoles()
         {
             while (_runThread) {
@@ -105,12 +108,14 @@ namespace TwitchToLeagueChat.Managers
                 }
             }
         }
+
         public static UserType GetUserType(string username)
         {
             if (HostName.Equals(username.ToLower())) return UserType.Host;
             if (Moderators.Contains(username.ToLower())) return UserType.Moderator;
             return Subscribers.Contains(username.ToLower()) ? UserType.Subscriber : UserType.Viewer;
         }
+
         public static void HandleChatMessage(string fromUser, string message, bool sendToLoL = true)
         {
             if (string.IsNullOrEmpty(message) || message.Equals(" ")) return;
@@ -140,6 +145,7 @@ namespace TwitchToLeagueChat.Managers
                 }
             }
         }
+
         public static bool AllowFromWhitelistBlacklist(string fromUser)
         {
             switch (FilterMode)
@@ -162,6 +168,7 @@ namespace TwitchToLeagueChat.Managers
             }
             return true;
         }
+
         public static bool IsMessageBlacklisted(string message)
         {
             message = message.Trim();
