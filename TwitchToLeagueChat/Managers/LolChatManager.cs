@@ -63,8 +63,6 @@ namespace TwitchToLeagueChat.Managers
 
         private void C_OnConnect(object sender, JabberNet.jabber.connection.StanzaStream stream)
         {
-            //var host = "chat.na2.lol.riotgames.com";
-            //stream.Write($"<stream:stream to=\"{host}\" xml:lang=\"*\" version=\"1.0\" xmlns:stream=\"http://etherx.jabber.org/streams\" xmlns=\"jabber:client\">");
         }
 
         void C_OnError(object sender, Exception ex)
