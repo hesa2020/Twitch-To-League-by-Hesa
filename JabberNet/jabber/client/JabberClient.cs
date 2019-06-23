@@ -708,6 +708,7 @@ namespace JabberNet.jabber.client
                         int Id = 0;
                         if (int.TryParse(tag.InnerText, out var output))
                             Id = output;
+                        //this[Options.JID] = new JID(Id.ToString());//TEST
                         Write("<stream:stream " +
                             $"to=\"{Server}\" " +
                             "xml:lang=\"*\" " +
