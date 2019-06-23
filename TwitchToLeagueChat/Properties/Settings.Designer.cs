@@ -157,7 +157,7 @@ namespace TwitchToLeagueChat.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"!:Start With,anal:Contains,anus:Contains,arse:Contains,ass:Contains,ballsack:Contains,balls:Contains,bastard:Contains,bitch:Contains,biatch:Contains,bloody:Contains,blowjob:Contains,blow job:Contains,bollock:Contains,bollok:Contains,boner:Contains,boob:Contains,bugger:Contains,bum:Contains,butt:Contains,buttplug:Contains,clitoris:Contains,cock:Contains,coon:Contains,crap:Contains,cunt:Contains,damn:Contains,dick:Contains,dildo:Contains,dyke:Contains,fag:Contains,feck:Contains,fellate:Contains,fellatio:Contains,felching:Contains,fuck:Contains,f u c k:Contains,fudgepacker:Contains,fudge packer:Contains,flange:Contains,Goddamn:Contains,God damn:Contains,hell:Contains,homo:Contains,jerk:Contains,jizz:Contains,knobend:Contains,knob end:Contains,labia:Contains,muff:Contains,nigger:Contains,nigga:Contains,omg:Contains,penis:Contains,piss:Contains,poop:Contains,prick:Contains,pube:Contains,pussy:Contains,queer:Contains,scrotum:Contains,sex:Contains,shit:Contains,s hit:Contains,sh1t:Contains,slut:Contains,smegma:Contains,spunk:Contains,tit:Contains,tosser:Contains,turd:Contains,twat:Contains,vagina:Contains,wank:Contains,whore:Contains,wtf:Contains,fuc:Contains,fuk:Contains,fking:Contains,fcking:Contains,fucking:Contains")]
         public string Bannedwords {
             get {
                 return ((string)(this["Bannedwords"]));

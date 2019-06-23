@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Data;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using TwitchToLeagueChat.Managers;
 using TwitchToLeagueChat.Objects;
@@ -12,18 +13,11 @@ namespace TwitchToLeagueChat
         private bool _isRunning;
         public IRC ChatEngine = new IRC();
         public LolChatManager LoLChat;
-        private BrowserForm _browserForm;
+        private SettingsForm settingsForm = new SettingsForm();
 
         public Form1()
         {
             InitializeComponent();
-            TwitchBotUsername.Text = Properties.Settings.Default["TwitchBotUsername"].ToString();
-            TwitchBotKey.Text = Properties.Settings.Default["TwitchBotKey"].ToString();
-            LeagueUsername.Text = Properties.Settings.Default["LeagueUsername"].ToString();
-            LeaguePassword.Text = Properties.Settings.Default["LeaguePassword"].ToString();
-            LeagueServer.Text = Properties.Settings.Default["LeagueServer"].ToString();
-            TwitchMinimumLevel.Text = Properties.Settings.Default["TwitchMinimumLevel"].ToString();
-            SummonerName.Text = Properties.Settings.Default["SummonerName"].ToString();
             FilterSetting.Text = Properties.Settings.Default["Filter"].ToString();
             var whitelist = Properties.Settings.Default["Whitelist"].ToString().Split(',');
             foreach (var username in whitelist)
@@ -52,20 +46,53 @@ namespace TwitchToLeagueChat
             TwitchChatManager.Blacklist = Blacklist;
             TwitchChatManager.Whitelist = Whitelist;
             TwitchChatManager.FilterMode = FilterSetting.Text;
+            SpotifyTimer.Tick += SpotifyTimer_Tick;
+            SpotifyTimer.Start();
         }
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+
+        private void SpotifyTimer_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                var proc = Process.GetProcessesByName("Spotify").FirstOrDefault(p => !string.IsNullOrWhiteSpace(p.MainWindowTitle));
+                if (proc == null)
+                {
+                    File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "current_song.txt"), "");
+                    CurrentSongLabel.Text = "Current Song: Spotify is not running!";
+                }
+                else
+                {
+                    if
+                        (
+                            string.Equals(proc.MainWindowTitle.Trim(), "Spotify", StringComparison.InvariantCultureIgnoreCase) ||
+                            string.Equals(proc.MainWindowTitle.Trim(), "Spotify Premium", StringComparison.InvariantCultureIgnoreCase)
+                        )
+                    {
+                        File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "current_song.txt"), "");
+                        CurrentSongLabel.Text = "Current Song: Spotify Paused";
+                    }
+                    else
+                    {
+                        CurrentSongLabel.Text = proc.MainWindowTitle;
+                        File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "current_song.txt"), proc.MainWindowTitle);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "current_song.txt"), "");
+                CurrentSongLabel.Text = "Current Song: Spotify is not running!";
+                Console.WriteLine(ex);
+            }
+        }
+
+        private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("https://twitch.tv/TheHesa");
         }
-        private void button1_Click(object sender, System.EventArgs e)
+
+        private void Button1_Click(object sender, System.EventArgs e)
         {
-            Properties.Settings.Default["TwitchBotUsername"] = TwitchBotUsername.Text;
-            Properties.Settings.Default["TwitchBotKey"] = TwitchBotKey.Text;
-            Properties.Settings.Default["LeagueUsername"] = LeagueUsername.Text;
-            Properties.Settings.Default["LeaguePassword"] = LeaguePassword.Text;
-            Properties.Settings.Default["LeagueServer"] = LeagueServer.Text;
-            Properties.Settings.Default["TwitchMinimumLevel"] = TwitchMinimumLevel.Text;
-            Properties.Settings.Default["SummonerName"] = SummonerName.Text;
             Properties.Settings.Default["Filter"] = FilterSetting.Text;
             var whitelist = "";
             foreach (DataGridViewRow row in Whitelist.Rows)
@@ -102,21 +129,22 @@ namespace TwitchToLeagueChat
             if(sender != null) MessageBox.Show(@"Settings have been saved successfully.");
         }
 
-        private void buttonRun_Click(object sender, System.EventArgs e)
+        private void ButtonRun_Click(object sender, System.EventArgs e)
         {
-            if (string.IsNullOrEmpty(TwitchBotUsername.Text)
-                || string.IsNullOrEmpty(TwitchBotKey.Text)
-                || string.IsNullOrEmpty(LeagueUsername.Text)
-                || string.IsNullOrEmpty(LeaguePassword.Text)
-                || string.IsNullOrEmpty(LeagueServer.Text)
-                || string.IsNullOrEmpty(TwitchMinimumLevel.Text)
-                || string.IsNullOrEmpty(SummonerName.Text)
+            if (settingsForm == null || settingsForm.Disposing) settingsForm = new SettingsForm();
+            if (string.IsNullOrEmpty(settingsForm.TwitchBotUsername.Text)
+                || string.IsNullOrEmpty(settingsForm.TwitchBotKey.Text)
+                || string.IsNullOrEmpty(settingsForm.LeagueUsername.Text)
+                || string.IsNullOrEmpty(settingsForm.LeaguePassword.Text)
+                || string.IsNullOrEmpty(settingsForm.LeagueServer.Text)
+                || string.IsNullOrEmpty(settingsForm.TwitchMinimumLevel.Text)
+                || string.IsNullOrEmpty(settingsForm.SummonerName.Text)
             )
             {
                 MessageBox.Show(@"Please fill all settings correctly.");
                 return;
             }
-            button1_Click(null, e);
+            Button1_Click(null, e);
             _isRunning = !_isRunning;
             buttonRun.Text = _isRunning ? "Stop" : "Run";
             if (_isRunning)
@@ -141,11 +169,6 @@ namespace TwitchToLeagueChat
                 //GC.Collect();
             }
         }
-        private void buttonGrabKey_Click(object sender, System.EventArgs e)
-        {
-            _browserForm = new BrowserForm {AccessKeyTextBox = TwitchBotKey};
-            _browserForm.ShowDialog();
-        }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -165,6 +188,7 @@ namespace TwitchToLeagueChat
                 Whitelist.Rows.RemoveAt(0);
             TwitchChatManager.Whitelist = Whitelist;
         }
+
         private void ButtonWhitelistRemove_Click(object sender, EventArgs e)
         {
             foreach(DataGridViewRow row in Whitelist.SelectedRows)
@@ -173,6 +197,7 @@ namespace TwitchToLeagueChat
             }
             TwitchChatManager.Whitelist = Whitelist;
         }
+
         private void ButtonBlacklistAdd_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(Blacklist_username.Text)) return;
@@ -184,6 +209,7 @@ namespace TwitchToLeagueChat
                 Blacklist.Rows.RemoveAt(0);
             TwitchChatManager.Blacklist = Blacklist;
         }
+
         private void ButtonBlacklistRemove_Click(object sender, EventArgs e)
         {
             foreach (DataGridViewRow row in Blacklist.SelectedRows)
@@ -219,6 +245,12 @@ namespace TwitchToLeagueChat
         private void FilterSetting_SelectedValueChanged(object sender, EventArgs e)
         {
             TwitchChatManager.FilterMode = FilterSetting.Text;
+        }
+
+        private void SettingsButton_Click(object sender, EventArgs e)
+        {
+            if (settingsForm == null || settingsForm.Disposing) settingsForm = new SettingsForm();
+            settingsForm.ShowDialog();
         }
     }
 }

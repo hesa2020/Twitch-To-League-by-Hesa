@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.button1 = new System.Windows.Forms.Button();
             this.buttonRun = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -48,23 +48,6 @@
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.FilterSetting = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.buttonGrabKey = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.TwitchBotKey = new System.Windows.Forms.TextBox();
-            this.TwitchBotUsername = new System.Windows.Forms.TextBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.SummonerName = new System.Windows.Forms.TextBox();
-            this.TwitchMinimumLevel = new System.Windows.Forms.ComboBox();
-            this.LeagueServer = new System.Windows.Forms.ComboBox();
-            this.LeaguePassword = new System.Windows.Forms.TextBox();
-            this.LeagueUsername = new System.Windows.Forms.TextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.Bannedwords_textbox = new System.Windows.Forms.TextBox();
             this.Bannedwords_pattern = new System.Windows.Forms.ComboBox();
@@ -73,6 +56,10 @@
             this.Bannedwords = new System.Windows.Forms.DataGridView();
             this.BannedText = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BannedPattern = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SettingsButton = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.CurrentSongLabel = new System.Windows.Forms.Label();
+            this.SpotifyTimer = new System.Windows.Forms.Timer(this.components);
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -80,8 +67,6 @@
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Whitelist)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Blacklist)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Bannedwords)).BeginInit();
             this.SuspendLayout();
@@ -96,18 +81,7 @@
             this.linkLabel1.TabIndex = 0;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "twitch.tv/TheHesa";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-            // 
-            // button1
-            // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(610, 429);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Save";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked);
             // 
             // buttonRun
             // 
@@ -118,7 +92,7 @@
             this.buttonRun.TabIndex = 4;
             this.buttonRun.Text = "Run";
             this.buttonRun.UseVisualStyleBackColor = true;
-            this.buttonRun.Click += new System.EventHandler(this.buttonRun_Click);
+            this.buttonRun.Click += new System.EventHandler(this.ButtonRun_Click);
             // 
             // groupBox3
             // 
@@ -327,206 +301,6 @@
             this.label8.TabIndex = 8;
             this.label8.Text = "Filter:";
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.buttonGrabKey);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.TwitchBotKey);
-            this.groupBox1.Controls.Add(this.TwitchBotUsername);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(366, 107);
-            this.groupBox1.TabIndex = 6;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Twitch Account Settings";
-            // 
-            // buttonGrabKey
-            // 
-            this.buttonGrabKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonGrabKey.Location = new System.Drawing.Point(9, 74);
-            this.buttonGrabKey.Name = "buttonGrabKey";
-            this.buttonGrabKey.Size = new System.Drawing.Size(351, 23);
-            this.buttonGrabKey.TabIndex = 5;
-            this.buttonGrabKey.Text = "Grab Access Key";
-            this.buttonGrabKey.UseVisualStyleBackColor = true;
-            this.buttonGrabKey.Click += new System.EventHandler(this.buttonGrabKey_Click);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 48);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(66, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Access Key:";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 22);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(81, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Account Name:";
-            // 
-            // TwitchBotKey
-            // 
-            this.TwitchBotKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.TwitchBotKey.Location = new System.Drawing.Point(118, 45);
-            this.TwitchBotKey.Name = "TwitchBotKey";
-            this.TwitchBotKey.PasswordChar = '•';
-            this.TwitchBotKey.Size = new System.Drawing.Size(242, 20);
-            this.TwitchBotKey.TabIndex = 1;
-            // 
-            // TwitchBotUsername
-            // 
-            this.TwitchBotUsername.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.TwitchBotUsername.Location = new System.Drawing.Point(118, 19);
-            this.TwitchBotUsername.Name = "TwitchBotUsername";
-            this.TwitchBotUsername.Size = new System.Drawing.Size(242, 20);
-            this.TwitchBotUsername.TabIndex = 0;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox2.Controls.Add(this.label7);
-            this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Controls.Add(this.SummonerName);
-            this.groupBox2.Controls.Add(this.TwitchMinimumLevel);
-            this.groupBox2.Controls.Add(this.LeagueServer);
-            this.groupBox2.Controls.Add(this.LeaguePassword);
-            this.groupBox2.Controls.Add(this.LeagueUsername);
-            this.groupBox2.Location = new System.Drawing.Point(12, 125);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(366, 155);
-            this.groupBox2.TabIndex = 7;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "League Account Settings";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 128);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(89, 13);
-            this.label7.TabIndex = 11;
-            this.label7.Text = "Summoner name:";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 101);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(80, 13);
-            this.label6.TabIndex = 10;
-            this.label6.Text = "Minimum Level:";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 74);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(41, 13);
-            this.label5.TabIndex = 9;
-            this.label5.Text = "Server:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 48);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(75, 13);
-            this.label4.TabIndex = 8;
-            this.label4.Text = "Bot Password:";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 22);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(77, 13);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "Bot Username:";
-            // 
-            // SummonerName
-            // 
-            this.SummonerName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.SummonerName.Location = new System.Drawing.Point(118, 125);
-            this.SummonerName.Name = "SummonerName";
-            this.SummonerName.Size = new System.Drawing.Size(242, 20);
-            this.SummonerName.TabIndex = 6;
-            // 
-            // TwitchMinimumLevel
-            // 
-            this.TwitchMinimumLevel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.TwitchMinimumLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.TwitchMinimumLevel.FormattingEnabled = true;
-            this.TwitchMinimumLevel.Items.AddRange(new object[] {
-            "Moderators",
-            "Subscribers",
-            "Viewers"});
-            this.TwitchMinimumLevel.Location = new System.Drawing.Point(118, 98);
-            this.TwitchMinimumLevel.Name = "TwitchMinimumLevel";
-            this.TwitchMinimumLevel.Size = new System.Drawing.Size(242, 21);
-            this.TwitchMinimumLevel.Sorted = true;
-            this.TwitchMinimumLevel.TabIndex = 5;
-            // 
-            // LeagueServer
-            // 
-            this.LeagueServer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.LeagueServer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.LeagueServer.FormattingEnabled = true;
-            this.LeagueServer.Items.AddRange(new object[] {
-            "Brazil",
-            "EU Nordic",
-            "EU West",
-            "Latin America North",
-            "Latin America South",
-            "NA",
-            "Oceania",
-            "Phillipines",
-            "Public Beta Environment",
-            "Russia",
-            "Taiwan",
-            "Thailand",
-            "Turkey",
-            "Vietnamn"});
-            this.LeagueServer.Location = new System.Drawing.Point(118, 71);
-            this.LeagueServer.Name = "LeagueServer";
-            this.LeagueServer.Size = new System.Drawing.Size(242, 21);
-            this.LeagueServer.Sorted = true;
-            this.LeagueServer.TabIndex = 4;
-            // 
-            // LeaguePassword
-            // 
-            this.LeaguePassword.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.LeaguePassword.Location = new System.Drawing.Point(118, 45);
-            this.LeaguePassword.Name = "LeaguePassword";
-            this.LeaguePassword.PasswordChar = '•';
-            this.LeaguePassword.Size = new System.Drawing.Size(242, 20);
-            this.LeaguePassword.TabIndex = 3;
-            // 
-            // LeagueUsername
-            // 
-            this.LeagueUsername.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.LeagueUsername.Location = new System.Drawing.Point(118, 19);
-            this.LeagueUsername.Name = "LeagueUsername";
-            this.LeagueUsername.Size = new System.Drawing.Size(242, 20);
-            this.LeagueUsername.TabIndex = 2;
-            // 
             // groupBox4
             // 
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -536,9 +310,9 @@
             this.groupBox4.Controls.Add(this.ButtonBannedwordsAdd);
             this.groupBox4.Controls.Add(this.ButtonBannedwordsRemove);
             this.groupBox4.Controls.Add(this.Bannedwords);
-            this.groupBox4.Location = new System.Drawing.Point(12, 285);
+            this.groupBox4.Location = new System.Drawing.Point(12, 12);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(366, 138);
+            this.groupBox4.Size = new System.Drawing.Size(366, 411);
             this.groupBox4.TabIndex = 8;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Banned Words";
@@ -547,7 +321,7 @@
             // 
             this.Bannedwords_textbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Bannedwords_textbox.Location = new System.Drawing.Point(6, 111);
+            this.Bannedwords_textbox.Location = new System.Drawing.Point(6, 384);
             this.Bannedwords_textbox.Name = "Bannedwords_textbox";
             this.Bannedwords_textbox.Size = new System.Drawing.Size(122, 20);
             this.Bannedwords_textbox.TabIndex = 27;
@@ -563,7 +337,7 @@
             "End With",
             "Equals",
             "Start With"});
-            this.Bannedwords_pattern.Location = new System.Drawing.Point(134, 110);
+            this.Bannedwords_pattern.Location = new System.Drawing.Point(134, 383);
             this.Bannedwords_pattern.Name = "Bannedwords_pattern";
             this.Bannedwords_pattern.Size = new System.Drawing.Size(67, 21);
             this.Bannedwords_pattern.Sorted = true;
@@ -572,7 +346,7 @@
             // ButtonBannedwordsAdd
             // 
             this.ButtonBannedwordsAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ButtonBannedwordsAdd.Location = new System.Drawing.Point(207, 109);
+            this.ButtonBannedwordsAdd.Location = new System.Drawing.Point(207, 382);
             this.ButtonBannedwordsAdd.Name = "ButtonBannedwordsAdd";
             this.ButtonBannedwordsAdd.Size = new System.Drawing.Size(75, 23);
             this.ButtonBannedwordsAdd.TabIndex = 25;
@@ -583,7 +357,7 @@
             // ButtonBannedwordsRemove
             // 
             this.ButtonBannedwordsRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ButtonBannedwordsRemove.Location = new System.Drawing.Point(285, 109);
+            this.ButtonBannedwordsRemove.Location = new System.Drawing.Point(285, 382);
             this.ButtonBannedwordsRemove.Name = "ButtonBannedwordsRemove";
             this.ButtonBannedwordsRemove.Size = new System.Drawing.Size(75, 23);
             this.ButtonBannedwordsRemove.TabIndex = 24;
@@ -614,7 +388,7 @@
             this.Bannedwords.ShowCellToolTips = false;
             this.Bannedwords.ShowEditingIcon = false;
             this.Bannedwords.ShowRowErrors = false;
-            this.Bannedwords.Size = new System.Drawing.Size(354, 84);
+            this.Bannedwords.Size = new System.Drawing.Size(354, 357);
             this.Bannedwords.TabIndex = 16;
             // 
             // BannedText
@@ -628,17 +402,48 @@
             this.BannedPattern.HeaderText = "Pattern";
             this.BannedPattern.Name = "BannedPattern";
             // 
+            // SettingsButton
+            // 
+            this.SettingsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.SettingsButton.Location = new System.Drawing.Point(529, 429);
+            this.SettingsButton.Name = "SettingsButton";
+            this.SettingsButton.Size = new System.Drawing.Size(75, 23);
+            this.SettingsButton.TabIndex = 9;
+            this.SettingsButton.Text = "Settings";
+            this.SettingsButton.UseVisualStyleBackColor = true;
+            this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
+            // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.Location = new System.Drawing.Point(610, 429);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 10;
+            this.button1.Text = "Save";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
+            // 
+            // CurrentSongLabel
+            // 
+            this.CurrentSongLabel.AutoSize = true;
+            this.CurrentSongLabel.Location = new System.Drawing.Point(114, 439);
+            this.CurrentSongLabel.Name = "CurrentSongLabel";
+            this.CurrentSongLabel.Size = new System.Drawing.Size(163, 13);
+            this.CurrentSongLabel.TabIndex = 11;
+            this.CurrentSongLabel.Text = "Current Song: Spotify not running";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 461);
+            this.Controls.Add(this.CurrentSongLabel);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.SettingsButton);
             this.Controls.Add(this.groupBox4);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.buttonRun);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.linkLabel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(800, 500);
@@ -656,10 +461,6 @@
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Whitelist)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Blacklist)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Bannedwords)).EndInit();
@@ -671,28 +472,10 @@
         #endregion
 
         private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button buttonRun;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.ComboBox FilterSetting;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button buttonGrabKey;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox TwitchBotKey;
-        private System.Windows.Forms.TextBox TwitchBotUsername;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox SummonerName;
-        private System.Windows.Forms.ComboBox TwitchMinimumLevel;
-        private System.Windows.Forms.ComboBox LeagueServer;
-        private System.Windows.Forms.TextBox LeaguePassword;
-        private System.Windows.Forms.TextBox LeagueUsername;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Button ButtonWhitelistAdd;
         private System.Windows.Forms.Button ButtonWhitelistRemove;
@@ -714,6 +497,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn BannedPattern;
         private System.Windows.Forms.ComboBox Bannedwords_pattern;
         private System.Windows.Forms.TextBox Bannedwords_textbox;
+        private System.Windows.Forms.Button SettingsButton;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label CurrentSongLabel;
+        private System.Windows.Forms.Timer SpotifyTimer;
     }
 }
 
