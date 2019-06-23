@@ -14,6 +14,7 @@ namespace TwitchToLeagueChat
         public IRC ChatEngine = new IRC();
         public LolChatManager LoLChat;
         private SettingsForm settingsForm = new SettingsForm();
+        private string previousSong = "";
 
         public Form1()
         {
@@ -57,8 +58,12 @@ namespace TwitchToLeagueChat
                 var proc = Process.GetProcessesByName("Spotify").FirstOrDefault(p => !string.IsNullOrWhiteSpace(p.MainWindowTitle));
                 if (proc == null)
                 {
-                    File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "current_song.txt"), "");
                     CurrentSongLabel.Text = "Current Song: Spotify is not running!";
+                    if (CurrentSongLabel.Text != previousSong)
+                    {
+                        previousSong = CurrentSongLabel.Text;
+                        File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "current_song.txt"), "");
+                    }
                 }
                 else
                 {
@@ -68,21 +73,32 @@ namespace TwitchToLeagueChat
                             string.Equals(proc.MainWindowTitle.Trim(), "Spotify Premium", StringComparison.InvariantCultureIgnoreCase)
                         )
                     {
-                        File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "current_song.txt"), "");
                         CurrentSongLabel.Text = "Current Song: Spotify Paused";
+                        if (CurrentSongLabel.Text != previousSong)
+                        {
+                            previousSong = CurrentSongLabel.Text;
+                            File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "current_song.txt"), "");
+                        }
                     }
                     else
                     {
                         CurrentSongLabel.Text = proc.MainWindowTitle;
-                        File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "current_song.txt"), proc.MainWindowTitle);
+                        if(CurrentSongLabel.Text != previousSong)
+                        {
+                            previousSong = CurrentSongLabel.Text;
+                            File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "current_song.txt"), proc.MainWindowTitle);
+                        }
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "current_song.txt"), "");
                 CurrentSongLabel.Text = "Current Song: Spotify is not running!";
-                Console.WriteLine(ex);
+                if (CurrentSongLabel.Text != previousSong)
+                {
+                    previousSong = CurrentSongLabel.Text;
+                    File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "current_song.txt"), "");
+                }
             }
         }
 

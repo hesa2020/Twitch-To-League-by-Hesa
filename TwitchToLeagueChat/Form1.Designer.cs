@@ -426,6 +426,7 @@
             // 
             // CurrentSongLabel
             // 
+            this.CurrentSongLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.CurrentSongLabel.AutoSize = true;
             this.CurrentSongLabel.Location = new System.Drawing.Point(114, 439);
             this.CurrentSongLabel.Name = "CurrentSongLabel";
