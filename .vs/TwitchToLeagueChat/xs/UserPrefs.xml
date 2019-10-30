@@ -1,0 +1,42 @@
+﻿<Properties StartupConfiguration="{41B17BBF-E18F-424E-B25E-C2306BFF5D90}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="TwitchToLeagueChat/Program.cs">
+    <Files>
+      <File FileName="TwitchToLeagueChat/Program.cs" Line="16" Column="1" />
+      <File FileName="TwitchToLeagueChat/Form1.cs" Line="30" Column="37" />
+      <File FileName="JabberNet/jabber/connection/sasl/SASLProcessor.cs" Line="133" Column="14" />
+      <File FileName="TwitchToLeagueChat/Managers/AuthClass.cs" Line="174" Column="16" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="TwitchToLeagueChat" expanded="True">
+            <Node name="JabberNet" expanded="True">
+              <Node name="jabber" expanded="True">
+                <Node name="connection" expanded="True">
+                  <Node name="sasl" expanded="True" />
+                </Node>
+              </Node>
+            </Node>
+            <Node name="TwitchToLeagueChat" expanded="True">
+              <Node name="Managers" expanded="True" />
+              <Node name="Properties" expanded="True" />
+              <Node name="Form1.cs" expanded="True" />
+              <Node name="Program.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.TwitchToLeagueChat PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/Users/sylvainmartens/Documents/GitHub/Twitch-To-League-by-Hesa/TwitchToLeagueChat/Form1.cs" relfile="TwitchToLeagueChat/Form1.cs" line="21" column="1" />
+      <Breakpoint file="/Users/sylvainmartens/Documents/GitHub/Twitch-To-League-by-Hesa/TwitchToLeagueChat/Form1.cs" relfile="TwitchToLeagueChat/Form1.cs" line="22" column="1" />
+      <Breakpoint file="/Users/sylvainmartens/Documents/GitHub/Twitch-To-League-by-Hesa/TwitchToLeagueChat/Form1.cs" relfile="TwitchToLeagueChat/Form1.cs" line="24" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

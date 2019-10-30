@@ -129,7 +129,7 @@ namespace JabberNet.jabber.connection.sasl
                 return new AnonymousProcessor();
             }
 
-            if (mt.HasFlag(MechanismType.EXTERNAL) && useClientCertificate)
+            if ((mt & MechanismType.EXTERNAL) == MechanismType.EXTERNAL && useClientCertificate)
             {
                 return new ExternalProcessor();
             }
