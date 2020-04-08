@@ -35,6 +35,9 @@
             this.TwitchBotKey = new System.Windows.Forms.TextBox();
             this.TwitchBotUsername = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.GameDirectory = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -46,9 +49,6 @@
             this.LeaguePassword = new System.Windows.Forms.TextBox();
             this.LeagueUsername = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.label8 = new System.Windows.Forms.Label();
-            this.GameDirectory = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -143,6 +143,35 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "League Account Settings";
             // 
+            // button2
+            // 
+            this.button2.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.button2.Location = new System.Drawing.Point(347, 150);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(36, 23);
+            this.button2.TabIndex = 10;
+            this.button2.Text = "...";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.Button2_Click);
+            // 
+            // GameDirectory
+            // 
+            this.GameDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.GameDirectory.Location = new System.Drawing.Point(118, 151);
+            this.GameDirectory.Name = "GameDirectory";
+            this.GameDirectory.Size = new System.Drawing.Size(223, 20);
+            this.GameDirectory.TabIndex = 13;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(6, 154);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(83, 13);
+            this.label8.TabIndex = 12;
+            this.label8.Text = "Game Directory:";
+            // 
             // label7
             // 
             this.label7.AutoSize = true;
@@ -220,20 +249,17 @@
             this.LeagueServer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.LeagueServer.FormattingEnabled = true;
             this.LeagueServer.Items.AddRange(new object[] {
-            "Brazil",
-            "EU Nordic",
-            "EU West",
-            "Latin America North",
-            "Latin America South",
+            "BR",
+            "EUNE",
+            "EUW",
+            "JP",
+            "LA1",
+            "LA2",
             "NA",
-            "Oceania",
-            "Phillipines",
-            "Public Beta Environment",
-            "Russia",
-            "Taiwan",
-            "Thailand",
-            "Turkey",
-            "Vietnamn"});
+            "OC1",
+            "RU",
+            "TEST",
+            "TR"});
             this.LeagueServer.Location = new System.Drawing.Point(118, 71);
             this.LeagueServer.Name = "LeagueServer";
             this.LeagueServer.Size = new System.Drawing.Size(265, 21);
@@ -269,35 +295,6 @@
             this.button1.Text = "Save";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.Button1_Click);
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 154);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(83, 13);
-            this.label8.TabIndex = 12;
-            this.label8.Text = "Game Directory:";
-            // 
-            // GameDirectory
-            // 
-            this.GameDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.GameDirectory.Location = new System.Drawing.Point(118, 151);
-            this.GameDirectory.Name = "GameDirectory";
-            this.GameDirectory.Size = new System.Drawing.Size(223, 20);
-            this.GameDirectory.TabIndex = 13;
-            // 
-            // button2
-            // 
-            this.button2.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.button2.Location = new System.Drawing.Point(347, 150);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(36, 23);
-            this.button2.TabIndex = 10;
-            this.button2.Text = "...";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.Button2_Click);
             // 
             // SettingsForm
             // 

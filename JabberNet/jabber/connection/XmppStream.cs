@@ -1029,7 +1029,7 @@ namespace JabberNet.jabber.connection
 
                     try
                     {
-                        m_saslProc[SASLProcessor.USERNAME] = (string)this[Options.PASSWORD];
+                        //m_saslProc[SASLProcessor.USERNAME] = (string)this[Options.PASSWORD];
                         Step s = m_saslProc.step(null, this.Document);
                         if (s != null)
                             this.Write(s);

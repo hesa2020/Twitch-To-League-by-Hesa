@@ -25,6 +25,10 @@ namespace JabberNet.jabber.connection.sasl
             {
                 Mechanism = MechanismType.X_RIOT_RSO
             };
+            XmlElement rso_token = doc.CreateElement(string.Empty, "rso_token", string.Empty);
+            a.AppendChild(rso_token);
+            XmlElement pas_token = doc.CreateElement(string.Empty, "pas_token", string.Empty);
+            a.AppendChild(pas_token);
             using (MemoryStream ms = new MemoryStream())
             {
                 string u = this[USERNAME].Replace("\"", "");
@@ -34,7 +38,18 @@ namespace JabberNet.jabber.connection.sasl
                 }
                 byte[] bu = Encoding.UTF8.GetBytes(u);
                 ms.Write(bu, 0, bu.Length);
-                a.Bytes = ms.ToArray();
+                rso_token.InnerText = Encoding.UTF8.GetString(ms.ToArray());
+            }
+            using (MemoryStream ms = new MemoryStream())
+            {
+                string u = this[PASSWORD].Replace("\"", "");
+                if ((u == null) || (u == ""))
+                {
+                    throw new SASLException("Password required (Username is AUTH Token)");
+                }
+                byte[] bu = Encoding.UTF8.GetBytes(u);
+                ms.Write(bu, 0, bu.Length);
+                pas_token.InnerText = Encoding.UTF8.GetString(ms.ToArray());
             }
             return a;
         }

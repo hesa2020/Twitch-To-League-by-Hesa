@@ -59,7 +59,7 @@ namespace TwitchToLeagueChat.Managers
             regionData.DefaultLocale = (Locales)Enum.Parse(typeof(Locales), regionDataYaml["default_locale"].ToString());
             regionData.Rso = new RSO
             {
-                AllowLoginQueueFallback = bool.Parse(regionDataYaml["rso"]["allow_lq_fallback"].ToString()),
+                AllowLoginQueueFallback = true,//bool.Parse(regionDataYaml["rso"]["allow_lq_fallback"].ToString()),
                 Kount = new Kount
                 {
                     Collecter = regionDataYaml["rso"]["kount"]["collector"].ToString(),
@@ -111,7 +111,7 @@ namespace TwitchToLeagueChat.Managers
                 },
                 PreloginConfig = new PreloginConfig
                 {
-                    PreloginConfigUrl = serverRegionDataYaml["prelogin_config"]["prelogin_config_url"].ToString()
+                    PreloginConfigUrl = ""//serverRegionDataYaml["prelogin_config"]["prelogin_config_url"].ToString()
                 },
                 Rms = new Rms
                 {
@@ -287,6 +287,53 @@ namespace TwitchToLeagueChat.Managers
             }
             return JsonConvert.DeserializeObject<UserData>(Encoding.UTF8.GetString(Convert.FromBase64String(tokenString)));
         }
+        public static string GetChatPasToken(RiotAuthToken token)
+        {
+            //Create the Webrequest and make it look like it is coming from the RiotClient
+            var client = (HttpWebRequest)WebRequest.Create($"https://pas.geo.si.riotgames.com/pas/v1/service/chat");
+            client.Method = WebRequestMethods.Http.Get;
+            if (token.Proxy != null)
+            {
+                client.Proxy = token.Proxy;
+            }
+            client.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+            client.UserAgent = "RiotClient/10.0.0.3162103 player-affinity (Mac;10.13;3;)";
+            client.CachePolicy = new RequestCachePolicy(RequestCacheLevel.BypassCache);
+            client.ProtocolVersion = HttpVersion.Version11;
+            client.ContentType = "application/json";
+            client.Accept = "application/json";
+            client.Headers.Set(HttpRequestHeader.Authorization, token.AccessTokenJson.TokenType + " " + token.AccessTokenJson.IdToken);
+            client.KeepAlive = false;
+            try
+            {
+                //Holy shit this is so much shorter than all of the other stuff. I love how POST requests are just that much longer
+                var response = (HttpWebResponse)client.GetResponse();
+                using (var rdr =
+                    new StreamReader(response.GetResponseStream() ?? throw new InvalidOperationException()))
+                {
+                    string response1 = rdr.ReadToEnd();
+                    return response1;
+                    /*
+                    var rawJson = JsonConvert.DeserializeObject<ChampData>(rdr.ReadToEnd());
+                    //ChampData
+
+                    var tokenString = rawJson.Data.ItemsJwt.Split('.')[1];
+                    var mod4 = tokenString.Length % 4;
+                    if (mod4 > 0)
+                    {
+                        tokenString += new string('=', 4 - mod4);
+                    }
+
+                    return JsonConvert.DeserializeObject<ChampionJwt>(Encoding.UTF8.GetString(Convert.FromBase64String(tokenString)));
+                    */
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
 
         public static ChampionJwt GetChampionJwt(RiotAuthToken token, UserData userData, RegionData regionData)
         {

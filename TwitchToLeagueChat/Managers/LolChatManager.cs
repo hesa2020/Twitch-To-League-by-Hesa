@@ -148,13 +148,13 @@ namespace TwitchToLeagueChat.Managers
             var regionData = AuthClass.ReadSystemRegionData(Path.Combine(Settings.Default.LeaguePath, "system.yaml"), server.ToUpper());
             AuthCred = AuthClass.GetLoginToken(username, password, regionData, Rso);
             var userData = AuthClass.GetUserData(AuthCred);
+            var pasToken = AuthClass.GetChatPasToken(AuthCred);
 
             //_c.InvokeControl = si;
-            _c.Resource = "";
-            _c.User = username;
-            _c.Password = AuthCred.AccessTokenJson.AccessToken;
-
-            _c.Server = "pvp.net";
+            _c.Resource = "xiff";
+            _c.User = AuthCred.RegionData.Rso.Token;
+            _c.Password = pasToken;// AuthCred.AccessTokenJson.AccessToken;
+            _c.Server = "eu1.pvp.net";
             _c.NetworkHost = AuthCred.RegionData.Servers.Chat.ChatHost;
             _c.Port = AuthCred.RegionData.Servers.Chat.ChatPort;
             _c.SSL = true;
@@ -162,7 +162,9 @@ namespace TwitchToLeagueChat.Managers
             _c.AutoLogin = true;
             _c.AutoPresence = true;
             _c["sasl.mechanisms"] = "X-Riot-RSO";
-            _c.RequiresSASL = false;
+            _c.RequiresSASL = true;
+
+            //_c.UseAnonymous = true;
 
             _k.Stream = _c;
 
@@ -219,7 +221,6 @@ namespace TwitchToLeagueChat.Managers
 
         void K_OnRosterItem(object sender, JabberNet.jabber.protocol.iq.Item ri)
         {
-
             if (Users.ContainsKey(ri.JID.User))
             {
                 if (ri.Subscription == JabberNet.jabber.protocol.iq.Subscription.remove)
