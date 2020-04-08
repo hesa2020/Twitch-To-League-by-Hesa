@@ -210,14 +210,21 @@ namespace JabberNet.bedrock.net
                 if (m_hostname != value)
                 {
                     m_hostname = value;
-
                     try
                     {
                         m_ip = IPAddress.Parse(m_hostname);
                     }
                     catch (FormatException)
                     {
-                        m_ip = null;
+                        IPHostEntry hostEntry = Dns.GetHostEntry(m_hostname);
+                        if (hostEntry.AddressList.Length > 0)
+                        {
+                            m_ip = hostEntry.AddressList[0];
+                        }
+                        else
+                        {
+                            m_ip = null;
+                        }
                     }
                 }
             }

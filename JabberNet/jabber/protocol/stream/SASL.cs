@@ -275,7 +275,7 @@ namespace JabberNet.jabber.protocol.stream
                     return MechanismType.KERBEROS_V5;
                 case "NMAS-SAMBA-AUTH":
                     return MechanismType.NMAS_SAMBA_AUTH;
-                case "X-Riot-RSO":
+                case "X-Riot-RSO-PAS":
                     return MechanismType.X_RIOT_RSO;
                 default:
                     return MechanismType.NONE;
@@ -334,7 +334,7 @@ namespace JabberNet.jabber.protocol.stream
                 case MechanismType.NMAS_SAMBA_AUTH:
                     return "NMAS-SAMBA-AUTH";
                 case MechanismType.X_RIOT_RSO:
-                    return "X-Riot-RSO";
+                    return "X-Riot-RSO-PAS";
                 default:
                     return null;
             }

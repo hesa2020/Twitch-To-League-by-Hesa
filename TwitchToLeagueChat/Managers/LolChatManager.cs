@@ -8,6 +8,7 @@ using System.Timers;
 using TwitchToLeagueChat.Objects;
 using System.IO;
 using TwitchToLeagueChat.Properties;
+using System.Windows.Forms;
 
 namespace TwitchToLeagueChat.Managers
 {
@@ -29,7 +30,7 @@ namespace TwitchToLeagueChat.Managers
         public event ConnectedHandler OnConnect;
         public event ConnectedHandler OnDisconnect;
 
-        readonly Timer _durationTimer = new Timer(30000);
+        readonly System.Timers.Timer _durationTimer = new System.Timers.Timer(30000);
 
         public RiotAuthToken AuthCred;
 
@@ -58,7 +59,7 @@ namespace TwitchToLeagueChat.Managers
 
         private void C_OnLoginRequired(object sender)
         {
-            //((JabberClient)sender).Write($"<auth xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\" mechanism=\"X-Riot-RSO\">{_c.Password}</auth>");
+            //((JabberClient)sender).Write($"<auth xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\" mechanism=\"X-Riot-RSO-PAS\">{_c.Password}</auth>");
         }
 
         private void C_OnConnect(object sender, JabberNet.jabber.connection.StanzaStream stream)
@@ -142,36 +143,78 @@ namespace TwitchToLeagueChat.Managers
             return returnValue;
         }
 
-        public void Initialize(string username, string password, string server, ISynchronizeInvoke si)
+        public bool Initialize(string username, string password, string server, ISynchronizeInvoke si)
         {
-            var Rso = AuthClass.GetOpenIdConfig();
-            var regionData = AuthClass.ReadSystemRegionData(Path.Combine(Settings.Default.LeaguePath, "system.yaml"), server.ToUpper());
-            AuthCred = AuthClass.GetLoginToken(username, password, regionData, Rso);
-            var userData = AuthClass.GetUserData(AuthCred);
-            var pasToken = AuthClass.GetChatPasToken(AuthCred);
+            try
+            {
+                if (!File.Exists(Path.Combine(Settings.Default.LeaguePath, "system.yaml")))
+                {
+                    MessageBox.Show("system.yaml does not exists in league of legends folder, pleasy verify your path setting");
+                    return false;
+                }
+                var Rso = AuthClass.GetOpenIdConfig();
+                if (Rso == null)
+                {
+                    MessageBox.Show("Unable to get OpenId config from league of legends servers");
+                    return false;
+                }
+                var regionData = AuthClass.ReadSystemRegionData(Path.Combine(Settings.Default.LeaguePath, "system.yaml"), server.ToUpper());
+                if (regionData == null)
+                {
+                    MessageBox.Show("Unable to read system region data from system.yaml, the file structure may have changed.");
+                    return false;
+                }
+                AuthCred = AuthClass.GetLoginToken(username, password, regionData, Rso);
+                if (AuthCred.Result != RiotAuthResult.Success)
+                {
+                    if(AuthCred.Result == RiotAuthResult.BadProxy) MessageBox.Show("Unable to authenticate with account credentials reason: Bad proxy.");
+                    if (AuthCred.Result == RiotAuthResult.Banned) MessageBox.Show("Unable to authenticate with account credentials reason: Banned.");
+                    if (AuthCred.Result == RiotAuthResult.ConProblem) MessageBox.Show("Unable to authenticate with account credentials reason: Connection problem.");
+                    if (AuthCred.Result == RiotAuthResult.InvalidCredentials) MessageBox.Show("Unable to authenticate with account credentials reason: Invalid credentials.");
+                    if (AuthCred.Result == RiotAuthResult.TooManyReq) MessageBox.Show("Unable to authenticate with account credentials reason: Too many requests.");
+                    if (AuthCred.Result == RiotAuthResult.UnknownReason) MessageBox.Show("Unable to authenticate with account credentials reason: Unknown.");
+                    return false;
+                }
+                var userData = AuthClass.GetUserData(AuthCred);
+                if (userData == null)
+                {
+                    MessageBox.Show("Unable to get user data from league of legends servers");
+                    return false;
+                }
+                var pasToken = AuthClass.GetChatPasToken(AuthCred);
+                if (pasToken == null)
+                {
+                    MessageBox.Show("Unable to get unique token from league of legends chat server");
+                    return false;
+                }
+                //_c.InvokeControl = si;
+                //_c.Resource = "xiff";
+                _c.Resource = "RC-2374418390";
+                _c.User = AuthCred.RegionData.Rso.Token;
+                _c.Password = pasToken;// AuthCred.AccessTokenJson.AccessToken;
+                _c.Server = "na1.pvp.net";
+                _c.NetworkHost = AuthCred.RegionData.Servers.Chat.ChatHost;
+                _c.Port = AuthCred.RegionData.Servers.Chat.ChatPort;
+                _c.SSL = true;
+                _c.AutoRoster = true;
+                _c.AutoLogin = true;
+                _c.AutoPresence = true;
+                _c["sasl.mechanisms"] = "X-Riot-RSO-PAS";
+                _c.RequiresSASL = true;
 
-            //_c.InvokeControl = si;
-            _c.Resource = "xiff";
-            _c.User = AuthCred.RegionData.Rso.Token;
-            _c.Password = pasToken;// AuthCred.AccessTokenJson.AccessToken;
-            _c.Server = "eu1.pvp.net";
-            _c.NetworkHost = AuthCred.RegionData.Servers.Chat.ChatHost;
-            _c.Port = AuthCred.RegionData.Servers.Chat.ChatPort;
-            _c.SSL = true;
-            _c.AutoRoster = true;
-            _c.AutoLogin = true;
-            _c.AutoPresence = true;
-            _c["sasl.mechanisms"] = "X-Riot-RSO";
-            _c.RequiresSASL = true;
+                _k.Stream = _c;
 
-            //_c.UseAnonymous = true;
+                Users.Clear();
+                TheUsers.Clear();
 
-            _k.Stream = _c;
-
-            Users.Clear();
-            TheUsers.Clear();
-
-            _c.Connect();
+                _c.Connect();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
+            }
+            return true;
         }
 
         bool C_OnInvalidCertificate(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certificate, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)

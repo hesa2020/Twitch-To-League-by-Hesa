@@ -703,6 +703,7 @@ namespace JabberNet.jabber.client
                 foreach (var node in tag.ChildNodes)
                 {
                     var xmlNode = (XmlNode)node;
+                    Console.WriteLine(xmlNode.OuterXml);
                     if (tag.Name == "success" && xmlNode.Name == "#text")
                     {
                         int Id = 0;
@@ -939,7 +940,6 @@ namespace JabberNet.jabber.client
             stream.AddFactory(new jabber.protocol.client.Factory());
             stream.AddFactory(new jabber.protocol.iq.Factory());
             stream.AddFactory(new jabber.protocol.x.Factory());
-
         }
     }
 

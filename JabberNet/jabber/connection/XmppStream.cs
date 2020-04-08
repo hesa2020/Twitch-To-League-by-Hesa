@@ -984,7 +984,7 @@ namespace JabberNet.jabber.connection
                     // of mechanisms we're willing to try.  Mask them off of the offered set.
                     object smt = this[Options.SASL_MECHANISMS];
                     if (smt != null)
-                        if((string)smt == "X-Riot-RSO")
+                        if((string)smt == "X-Riot-RSO-PAS")
                         {
                             types = MechanismType.X_RIOT_RSO;
                         }
@@ -1066,7 +1066,7 @@ namespace JabberNet.jabber.connection
         /// <param name="tag">XML element that contains the new tag.</param>
         protected virtual void OnElement(object sender, System.Xml.XmlElement tag)
         {
-            //Debug.WriteLine(tag.OuterXml);
+            Debug.WriteLine(tag.OuterXml);
 
             if (tag is jabber.protocol.stream.Error)
             {
@@ -1421,13 +1421,17 @@ namespace JabberNet.jabber.connection
         [MethodImpl(MethodImplOptions.Synchronized)]
         void IStanzaEventListener.BytesRead(byte[] buf, int offset, int count)
         {
-            OnReadText?.Invoke(this, ENC.GetString(buf, offset, count));
+            var readtext = ENC.GetString(buf, offset, count);
+            Debug.WriteLine("Read: " + readtext);
+            OnReadText?.Invoke(this, readtext);
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         void IStanzaEventListener.BytesWritten(byte[] buf, int offset, int count)
         {
-            OnWriteText?.Invoke(this, ENC.GetString(buf, offset, count));
+            var writetext = ENC.GetString(buf, offset, count);
+            Debug.WriteLine("Write: " + writetext);
+            OnWriteText?.Invoke(this, writetext);
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
@@ -1440,8 +1444,8 @@ namespace JabberNet.jabber.connection
                 if (InvokeRequired)
                     CheckedInvoke(OnStreamInit, new object[] { this, stream });
                 else
-              */
-                    OnStreamInit(this, stream);
+                */
+                OnStreamInit(this, stream);
             }
         }
 
@@ -1483,6 +1487,7 @@ namespace JabberNet.jabber.connection
         [MethodImpl(MethodImplOptions.Synchronized)]
         void IStanzaEventListener.DocumentStarted(XmlElement elem)
         {
+            Debug.WriteLine(elem.OuterXml);
             // The OnDocumentStart logic stays outside the listener, so that it can be
             // more easily overriden by subclasses.
             OnDocumentStart(m_stanzas, elem);
@@ -1507,9 +1512,10 @@ namespace JabberNet.jabber.connection
         [MethodImpl(MethodImplOptions.Synchronized)]
         void IStanzaEventListener.StanzaReceived(XmlElement elem)
         {
+            Debug.WriteLine(elem.OuterXml);
             // The OnElement logic stays outside the listener, so that it can be
             // more easily overriden by subclasses.
-                OnElement(m_stanzas, elem);
+            OnElement(m_stanzas, elem);
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]

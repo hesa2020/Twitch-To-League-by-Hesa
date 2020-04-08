@@ -19,10 +19,15 @@ namespace TwitchToLeagueChat.Managers
         /// <returns>The config as <seealso cref="RiotAuthOpenIdConfiguration"></seealso></returns>
         public static RiotAuthOpenIdConfiguration GetOpenIdConfig(string url = "https://auth.riotgames.com/.well-known/openid-configuration")
         {
-            using (var client = new WebClient())
+            try
             {
-                return JsonConvert.DeserializeObject<RiotAuthOpenIdConfiguration>(client.DownloadString(url));
+                using (var client = new WebClient())
+                {
+                    return JsonConvert.DeserializeObject<RiotAuthOpenIdConfiguration>(client.DownloadString(url));
+                }
             }
+            catch (Exception) { }
+            return null;
         }
 
         /// <summary>
@@ -279,18 +284,25 @@ namespace TwitchToLeagueChat.Managers
 
         public static UserData GetUserData(RiotAuthToken token)
         {
-            var tokenString = token.AccessTokenJson.AccessToken.Split('.')[1];
-            int mod4 = tokenString.Length % 4;
-            if (mod4 > 0)
+            try
             {
-                tokenString += new string('=', 4 - mod4);
+                var tokenString = token.AccessTokenJson.AccessToken.Split('.')[1];
+                int mod4 = tokenString.Length % 4;
+                if (mod4 > 0)
+                {
+                    tokenString += new string('=', 4 - mod4);
+                }
+                return JsonConvert.DeserializeObject<UserData>(Encoding.UTF8.GetString(Convert.FromBase64String(tokenString)));
             }
-            return JsonConvert.DeserializeObject<UserData>(Encoding.UTF8.GetString(Convert.FromBase64String(tokenString)));
+            catch (Exception) { }
+            return null;
         }
         public static string GetChatPasToken(RiotAuthToken token)
         {
+
             //Create the Webrequest and make it look like it is coming from the RiotClient
             var client = (HttpWebRequest)WebRequest.Create($"https://pas.geo.si.riotgames.com/pas/v1/service/chat");
+            //var client = (HttpWebRequest)WebRequest.Create($"https://" + token.RegionData.Servers.Chat.ChatHost + "/pas/v1/service/chat");
             client.Method = WebRequestMethods.Http.Get;
             if (token.Proxy != null)
             {

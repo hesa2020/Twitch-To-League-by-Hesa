@@ -166,14 +166,21 @@ namespace TwitchToLeagueChat
             if (_isRunning)
             {
                 LoLChat = new LolChatManager();
-                LoLChat.Initialize(Properties.Settings.Default["LeagueUsername"].ToString(),
+                if(LoLChat.Initialize(Properties.Settings.Default["LeagueUsername"].ToString(),
                     Properties.Settings.Default["LeaguePassword"].ToString(),
-                    Properties.Settings.Default["LeagueServer"].ToString(), null);
-                TwitchChatManager.LolChat = LoLChat;
-                TwitchChatManager.Initialize();
+                    Properties.Settings.Default["LeagueServer"].ToString(), null))
+                {
+                    TwitchChatManager.LolChat = LoLChat;
+                    TwitchChatManager.Initialize();
 
-                ChatEngine = new IRC();
-                ChatEngine.Initialize();
+                    ChatEngine = new IRC();
+                    ChatEngine.Initialize();
+                }
+                else
+                {
+                    _isRunning = !_isRunning;
+                    buttonRun.Text = _isRunning ? "Stop" : "Start";
+                }
             }
             else
             {

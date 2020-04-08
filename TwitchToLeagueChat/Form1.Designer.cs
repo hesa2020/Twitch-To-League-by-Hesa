@@ -90,7 +90,7 @@
             this.buttonRun.Name = "buttonRun";
             this.buttonRun.Size = new System.Drawing.Size(75, 23);
             this.buttonRun.TabIndex = 4;
-            this.buttonRun.Text = "Run";
+            this.buttonRun.Text = "Start";
             this.buttonRun.UseVisualStyleBackColor = true;
             this.buttonRun.Click += new System.EventHandler(this.ButtonRun_Click);
             // 
