@@ -644,8 +644,10 @@ namespace JabberNet.jabber.client
                 return;
             }
 
-            AuthIQ aiq = new AuthIQ(Document);
-            aiq.Type = IQType.set;
+            AuthIQ aiq = new AuthIQ(Document)
+            {
+                Type = IQType.set
+            };
             Auth a = aiq.Instruction;
 
             if ((res["sequence"] != null) && (res["token"] != null))
@@ -703,25 +705,17 @@ namespace JabberNet.jabber.client
                 foreach (var node in tag.ChildNodes)
                 {
                     var xmlNode = (XmlNode)node;
-                    Console.WriteLine(xmlNode.OuterXml);
                     if (tag.Name == "success" && xmlNode.Name == "#text")
                     {
                         int Id = 0;
                         if (int.TryParse(tag.InnerText, out var output))
                             Id = output;
                         //this[Options.JID] = new JID(Id.ToString());//TEST
-                        Write("<stream:stream " +
-                            $"to=\"{Server}\" " +
-                            "xml:lang=\"*\" " +
-                            "version=\"1.0\" " +
-                            "xmlns:stream=\"http://etherx.jabber.org/streams\" " +
-                            "xmlns=\"jabber:client\">");
-                        //Write($"<iq type=\"set\" id=\"{Id}\"><bind xmlns=\"urn:ietf:params:xml:ns:xmpp-bind\"><resource>RC</resource></bind></iq>");
+                        Write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + Environment.NewLine + $"<stream:stream to=\"{Server}\" xml:lang=\"en\" version=\"1.0\" xmlns=\"jabber:client\" xmlns:stream=\"http://etherx.jabber.org/streams\">");
                     }
                     if (xmlNode.Name == "rxep")
                     {
-                        //This is sent from client to server after this is received. I honestly don't know this xmpp stuff so lets pretend we read that
-                        Write($"<iq type=\"set\" id=\"0\"><bind xmlns=\"urn:ietf:params:xml:ns:xmpp-bind\"><resource>RC</resource></bind></iq>");
+                        Write($"<iq id=\"_xmpp_bind1\" type=\"set\"><bind xmlns=\"urn:ietf:params:xml:ns:xmpp-bind\"><puuid-mode enabled=\"true\"/><resource>RC-2374418390</resource></bind></iq>");
                         IsAuthenticated = true;
                         break;
                     }
@@ -730,8 +724,7 @@ namespace JabberNet.jabber.client
 
             if (OnPresence != null)
             {
-                Presence p = tag as Presence;
-                if (p != null)
+                if (tag is Presence p)
                 {
                     OnPresence(this, p);
                     return;
@@ -739,16 +732,13 @@ namespace JabberNet.jabber.client
             }
             if (OnMessage != null)
             {
-                Message m = tag as Message;
-                if (m != null)
+                if (tag is Message m)
                 {
                     OnMessage(this, m);
                     return;
                 }
             }
-
-            IQ i = tag as IQ;
-            if (i != null)
+            if (tag is IQ i)
             {
                 FireOnIQ(this, i);
                 return;
@@ -758,9 +748,7 @@ namespace JabberNet.jabber.client
         private void FireOnIQ(object sender, IQ iq)
         {
             // We know we're on the GUI thread.
-            if (OnIQ != null)
-                OnIQ(this, iq);
-
+            OnIQ?.Invoke(this, iq);
             if (AutoIQErrors)
             {
                 if (!iq.Handled &&
@@ -786,8 +774,7 @@ namespace JabberNet.jabber.client
             }
             else
             {
-                IQ iq = i as IQ;
-                if (iq != null)
+                if (i is IQ iq)
                     FireOnError(new IQException(iq));
                 else
                     FireOnError(new AuthenticationFailedException(i.OuterXml));

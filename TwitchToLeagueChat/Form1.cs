@@ -173,8 +173,8 @@ namespace TwitchToLeagueChat
                     TwitchChatManager.LolChat = LoLChat;
                     TwitchChatManager.Initialize();
 
-                    ChatEngine = new IRC();
-                    ChatEngine.Initialize();
+                    /*ChatEngine = new IRC();
+                    ChatEngine.Initialize();*/
                 }
                 else
                 {
@@ -184,9 +184,9 @@ namespace TwitchToLeagueChat
             }
             else
             {
-                LoLChat.Disconnect();
+                LoLChat?.Disconnect();
                 LoLChat = null;
-                ChatEngine.Stop();
+                ChatEngine?.Stop();
                 ChatEngine = null;
                 TwitchChatManager.Stop();
                 //GC.Collect();

@@ -167,7 +167,7 @@ namespace TwitchToLeagueChat.Managers
                 AuthCred = AuthClass.GetLoginToken(username, password, regionData, Rso);
                 if (AuthCred.Result != RiotAuthResult.Success)
                 {
-                    if(AuthCred.Result == RiotAuthResult.BadProxy) MessageBox.Show("Unable to authenticate with account credentials reason: Bad proxy.");
+                    if (AuthCred.Result == RiotAuthResult.BadProxy) MessageBox.Show("Unable to authenticate with account credentials reason: Bad proxy.");
                     if (AuthCred.Result == RiotAuthResult.Banned) MessageBox.Show("Unable to authenticate with account credentials reason: Banned.");
                     if (AuthCred.Result == RiotAuthResult.ConProblem) MessageBox.Show("Unable to authenticate with account credentials reason: Connection problem.");
                     if (AuthCred.Result == RiotAuthResult.InvalidCredentials) MessageBox.Show("Unable to authenticate with account credentials reason: Invalid credentials.");
@@ -181,18 +181,20 @@ namespace TwitchToLeagueChat.Managers
                     MessageBox.Show("Unable to get user data from league of legends servers");
                     return false;
                 }
+                var entiltlementsToken = AuthClass.GetEntitlementsToken(AuthCred);
                 var pasToken = AuthClass.GetChatPasToken(AuthCred);
                 if (pasToken == null)
                 {
                     MessageBox.Show("Unable to get unique token from league of legends chat server");
                     return false;
                 }
+
                 //_c.InvokeControl = si;
                 //_c.Resource = "xiff";
                 _c.Resource = "RC-2374418390";
-                _c.User = AuthCred.RegionData.Rso.Token;
+                _c.User = regionData.Rso.Token;// AuthCred.RegionData.Rso.Token;
                 _c.Password = pasToken;// AuthCred.AccessTokenJson.AccessToken;
-                _c.Server = "na1.pvp.net";
+                _c.Server = regionData.PlatformId.ToString() + ".pvp.net";
                 _c.NetworkHost = AuthCred.RegionData.Servers.Chat.ChatHost;
                 _c.Port = AuthCred.RegionData.Servers.Chat.ChatPort;
                 _c.SSL = true;

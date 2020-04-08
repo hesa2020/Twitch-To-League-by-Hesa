@@ -1066,8 +1066,6 @@ namespace JabberNet.jabber.connection
         /// <param name="tag">XML element that contains the new tag.</param>
         protected virtual void OnElement(object sender, System.Xml.XmlElement tag)
         {
-            Debug.WriteLine(tag.OuterXml);
-
             if (tag is jabber.protocol.stream.Error)
             {
                 // Stream error.  Race condition!  Two cases:
